@@ -15,7 +15,7 @@ class JSendResponse
     public function __construct($status, $data = null, $code = null, $message = null)
     {
         // Validate they gave us a valid status.
-        if (!in_array($status, [self::STATUS_SUCCESS, self::STATUS_FAIL, self::STATUS_ERROR])) {
+        if (!in_array($status, [self::STATUS_SUCCESS, self::STATUS_FAIL, self::STATUS_ERROR]) || $status == null) {
             throw new \InvalidArgumentException("Invalid status type provided. Use one of the JSendResponse constants");
         }
 
@@ -33,6 +33,11 @@ class JSendResponse
         if (!is_null($message) && !is_string($message)) {
             throw new \InvalidArgumentException("Error message must be null or a string");
         }
+
+        $this->status  = $status;
+        $this->data    = $data;
+        $this->code    = $code;
+        $this->message = $message;
     }
 
     /**
