@@ -2,7 +2,7 @@
 
 namespace JSend;
 
-final class JSendBuilder
+class JSendBuilder
 {
     private $status, $data, $message, $code;
 
