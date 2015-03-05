@@ -9,7 +9,7 @@
 	"type": "project",
 	"autoload": {
 		"psr-4": {
-			"JSend\\": "./src/"
+			"EvanDarwin\\JSend\\": "./src/"
 		}
 	}
 }
