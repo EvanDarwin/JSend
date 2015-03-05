@@ -7,6 +7,52 @@ class JSendBuilder
     private $status, $data, $message, $code;
 
     /**
+     * Construct a new JSendBuilder object.
+     *
+     * @param string      $status  The status of the response
+     * @param array       $data    The data to include in the response
+     * @param string|null $message The human-readable message to include with the response
+     * @param int|null    $code    The human (error) code
+     */
+    public function __construct($status, array $data = array(), $message = null, $code = null)
+    {
+        $this->status  = ($status) ? $status : 'success';
+        $this->data    = $data;
+        $this->message = $message;
+        $this->code    = $code;
+    }
+
+    /**
+     * Sets the status to successful.
+     */
+    public function success()
+    {
+        $this->status = "success";
+
+        return $this;
+    }
+
+    /**
+     * Sets the status to be an error.
+     */
+    public function error()
+    {
+        $this->status = "error";
+
+        return $this;
+    }
+
+    /**
+     * Sets the status to failed.
+     */
+    public function fail()
+    {
+        $this->status = "fail";
+
+        return $this;
+    }
+
+    /**
      * Sets the status of the response. Valid options are:
      *  - 'success'
      *  - 'error'
@@ -16,6 +62,8 @@ class JSendBuilder
      * @param $status
      *
      * @return $this
+     *
+     * @deprecated
      */
     public function status($status)
     {
