@@ -1,6 +1,6 @@
 <?php
 
-namespace JSend;
+namespace EvanDarwin\JSend;
 
 class JSendBuilder
 {
@@ -14,9 +14,9 @@ class JSendBuilder
      * @param string|null $message The human-readable message to include with the response
      * @param int|null    $code    The human (error) code
      */
-    public function __construct($status, array $data = array(), $message = null, $code = null)
+    public function __construct($status = 'success', array $data = array(), $message = null, $code = null)
     {
-        $this->status  = ($status) ? $status : 'success';
+        $this->status  = $status;
         $this->data    = $data;
         $this->message = $message;
         $this->code    = $code;

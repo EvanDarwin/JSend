@@ -1,6 +1,6 @@
 <?php
 
-namespace JSend;
+namespace EvanDarwin\JSend;
 
 class JSendResponse
 {
