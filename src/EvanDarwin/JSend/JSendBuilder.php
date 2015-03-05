@@ -27,7 +27,7 @@ class JSendBuilder
      */
     public function success()
     {
-        $this->status = "success";
+        $this->status = JSendResponse::STATUS_SUCCESS;
 
         return $this;
     }
@@ -37,7 +37,7 @@ class JSendBuilder
      */
     public function error()
     {
-        $this->status = "error";
+        $this->status = JSendResponse::STATUS_ERROR;
 
         return $this;
     }
@@ -47,7 +47,7 @@ class JSendBuilder
      */
     public function fail()
     {
-        $this->status = "fail";
+        $this->status = JSendResponse::STATUS_FAIL;
 
         return $this;
     }
