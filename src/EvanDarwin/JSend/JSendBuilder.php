@@ -14,7 +14,11 @@ class JSendBuilder
      * @param string|null $message The human-readable message to include with the response
      * @param int|null    $code    The human (error) code
      */
-    public function __construct($status = 'success', array $data = array(), $message = null, $code = null)
+    public function __construct(
+        $status = JSendResponse::STATUS_SUCCESS,
+        array $data = array(),
+        $message = null,
+        $code = null)
     {
         $this->status  = $status;
         $this->data    = $data;
