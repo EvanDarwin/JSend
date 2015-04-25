@@ -5,6 +5,9 @@
 		"jsend",
 		"json"
 	],
+	"require-dev": {
+		"codeclimate/php-test-reporter": "dev-master"
+	},
 	"license": "MIT",
 	"type": "project",
 	"autoload": {
