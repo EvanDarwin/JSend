@@ -14,8 +14,14 @@ class JSendResponse
 
     public function __construct($status, $data = null, $code = null, $message = null)
     {
+        $validStatuses = array(
+          self::STATUS_SUCCESS,
+          self::STATUS_FAIL,
+          self::STATUS_ERROR
+        );
+
         // Validate they gave us a valid status.
-        if (!in_array($status, [self::STATUS_SUCCESS, self::STATUS_FAIL, self::STATUS_ERROR]) || $status == null) {
+        if (!in_array($status, $validStatuses) || $status == null) {
             throw new \InvalidArgumentException("Invalid status type provided. Use one of the JSendResponse constants");
         }
 
@@ -47,14 +53,13 @@ class JSendResponse
      */
     public function getStatus()
     {
-        switch ($this->status) {
-            case self::STATUS_SUCCESS:
-                return "success";
-            case self::STATUS_ERROR:
-                return "error";
-            case self::STATUS_FAIL:
-                return "fail";
-        }
+      if($this->status == self::STATUS_SUCCESS) {
+        return "success";
+      } else if($this->status == self::STATUS_FAIL) {
+        return "fail";
+      } else {
+        return "error";
+      }
     }
 
     /**
@@ -102,10 +107,10 @@ class JSendResponse
      */
     public function getArray()
     {
-        $response = [
+        $response = array(
             'status' => $this->getStatus(),
             'data'   => $this->data
-        ];
+        );
 
         if (!is_null($this->code)) {
             $response['code'] = $this->code;

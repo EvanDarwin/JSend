@@ -47,9 +47,19 @@ class JSendBuilder
     }
 
     /**
-     * Sets the status to failed.
+     * Alias for ::failed()
+     *
+     * @deprecated
      */
     public function fail()
+    {
+      $this->failed();
+    }
+
+    /**
+     * Sets the status to failed.
+     */
+    public function failed()
     {
         $this->status = JSendResponse::STATUS_FAIL;
 
@@ -72,22 +82,22 @@ class JSendBuilder
     public function status($status)
     {
         if (is_string($status)) {
-            switch ($status) {
-                case 'success':
-                    $status = JSendResponse::STATUS_SUCCESS;
-                    break;
-                case 'error':
-                    $status = JSendResponse::STATUS_ERROR;
-                    break;
-                case 'fail':
-                    $status = JSendResponse::STATUS_FAIL;
-                    break;
-                default:
-                    throw new \InvalidArgumentException("Unable to parse status '${status}'");
-            }
+          switch ($status) {
+            case 'success':
+              $status = JSendResponse::STATUS_SUCCESS;
+              break;
+            case 'error':
+              $status = JSendResponse::STATUS_ERROR;
+              break;
+            case 'fail':
+              $status = JSendResponse::STATUS_FAIL;
+              break;
+            default:
+              throw new \InvalidArgumentException("Unable to parse status '${status}'");
+          }
+        } else {
+          $this->status = $status;
         }
-
-        $this->status = $status;
 
         return $this;
     }
@@ -142,10 +152,6 @@ class JSendBuilder
      */
     public function get()
     {
-        if (is_null($this->status)) {
-            throw new \ArgumentException("The status code must be set.");
-        }
-
         return new JSendResponse($this->status, $this->data, $this->code, $this->message);
     }
 }
