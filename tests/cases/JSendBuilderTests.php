@@ -6,28 +6,12 @@ use EvanDarwin\JSend\JSendResponse;
 class JSendBuilderTests extends TestCase
 {
   protected $defaults = array(
-    "status"  => JSendResponse::STATUS_SUCCESS,
-    "data"    => array(),
-    "message" => "default message",
-    "code"    => 123
+      "status"  => JSendResponse::STATUS_SUCCESS,
+      "data"    => array(),
+      "errors"  => array(),
+      "message" => "default message",
+      "code"    => 123
   );
-
-  /**
-   * Creates a new JSendBuilder instance
-   *
-   * @param array $attrs Attribute overrides
-   */
-  protected function constructBuilder($attrs = array())
-  {
-    $attributes = (object)array_merge($this->defaults, $attrs);
-
-    return new JSendBuilder(
-      $attributes->status,
-      $attributes->data,
-      $attributes->message,
-      $attributes->code
-    );
-  }
 
   /**
    * Test the construction of JSendBuilder
@@ -39,6 +23,24 @@ class JSendBuilderTests extends TestCase
     $this->assertNotNull($builder);
   }
 
+  /**
+   * Creates a new JSendBuilder instance
+   *
+   * @param array $attrs Attribute overrides
+   */
+  protected function constructBuilder($attrs = array())
+  {
+    $attributes = (object)array_merge($this->defaults, $attrs);
+
+    return new JSendBuilder(
+        $attributes->status,
+        $attributes->data,
+        $attributes->errors,
+        $attributes->message,
+        $attributes->code
+    );
+  }
+
   public function testAttributesSet()
   {
     $builder = $this->constructBuilder();
@@ -48,7 +50,7 @@ class JSendBuilderTests extends TestCase
     $properties = (object)array();
 
     // Use reflection to get private properties of the object.
-    foreach(array('code', 'status', 'message', 'data') as $attr) {
+    foreach (array('code', 'status', 'errors', 'message', 'data') as $attr) {
       $prop = $mirror->getProperty($attr);
       $prop->setAccessible(true);
 
@@ -58,6 +60,7 @@ class JSendBuilderTests extends TestCase
     $this->assertEquals($properties->code->getValue($builder), $this->defaults['code']);
     $this->assertEquals($properties->status->getValue($builder), $this->defaults['status']);
     $this->assertEquals($properties->data->getValue($builder), $this->defaults['data']);
+    $this->assertEquals($properties->errors->getValue($builder), $this->defaults['errors']);
     $this->assertEquals($properties->message->getValue($builder), $this->defaults['message']);
   }
 
@@ -66,7 +69,7 @@ class JSendBuilderTests extends TestCase
     $builder = $this->constructBuilder();
 
     $mirror = new ReflectionClass($builder);
-    $prop = $mirror->getProperty('status');
+    $prop   = $mirror->getProperty('status');
     $prop->setAccessible(true);
 
     // Test that ->failed() works.
@@ -91,11 +94,11 @@ class JSendBuilderTests extends TestCase
     $builder = $this->constructBuilder();
 
     $mirror = new ReflectionClass($builder);
-    $prop = $mirror->getProperty('data');
+    $prop   = $mirror->getProperty('data');
     $prop->setAccessible(true);
 
     $builder->data(array(
-      'a' => 123
+        'a' => 123
     ));
 
     $this->assertEquals($prop->getValue($builder), array("a" => 123));
@@ -106,7 +109,7 @@ class JSendBuilderTests extends TestCase
     $builder = $this->constructBuilder();
 
     $mirror = new ReflectionClass($builder);
-    $prop = $mirror->getProperty('message');
+    $prop   = $mirror->getProperty('message');
     $prop->setAccessible(true);
 
     $builder->message("Hello, world.");
@@ -119,7 +122,7 @@ class JSendBuilderTests extends TestCase
     $builder = $this->constructBuilder();
 
     $mirror = new ReflectionClass($builder);
-    $prop = $mirror->getProperty('code');
+    $prop   = $mirror->getProperty('code');
     $prop->setAccessible(true);
 
     $builder->code(69);
@@ -129,11 +132,10 @@ class JSendBuilderTests extends TestCase
 
   public function testGetResponse()
   {
-    $builder = $this->constructBuilder();
+    $builder  = $this->constructBuilder();
+    $response = $builder->get();
 
-    $builder->success();
-
-    $this->assertInstanceOf('EvanDarwin\JSend\JSendResponse', $builder->get());
+    $this->assertInstanceOf('EvanDarwin\JSend\JSendResponse', $response);
   }
 
   public function testSetStatus()
@@ -157,5 +159,14 @@ class JSendBuilderTests extends TestCase
     $builder = $this->constructBuilder();
 
     $builder->status('hunter2');
+  }
+
+  public function testErrorsExistsInResponse()
+  {
+    $builder = $this->constructBuilder();
+
+    $result = $builder->errors(['hello' => 'world'])->get()->getArray();
+
+    $this->assertTrue((array_key_exists('hello', $result['errors']) && $result['errors']['hello'] == 'world'));
   }
 }

@@ -5,23 +5,12 @@ use EvanDarwin\JSend\JSendResponse;
 class JSendResponseTests extends TestCase
 {
   protected $defaults = array(
-    "status"  => JSendResponse::STATUS_SUCCESS,
-    "data"    => array(),
-    "code"    => null,
-    "message" => "default"
+      "status"  => JSendResponse::STATUS_SUCCESS,
+      "data"    => array(),
+      "errors"  => array(),
+      "code"    => null,
+      "message" => "default"
   );
-
-  protected function constructResponse(array $attributes = array())
-  {
-    $attributes = (object)array_merge($this->defaults, $attributes);
-
-    return new JSendResponse(
-      $attributes->status,
-      $attributes->data,
-      $attributes->code,
-      $attributes->message
-    );
-  }
 
   public function testConstructResponse()
   {
@@ -33,6 +22,20 @@ class JSendResponseTests extends TestCase
     $this->assertEquals($response->getCode(), $this->defaults['code']);
     $this->assertEquals($response->getMessage(), $this->defaults['message']);
     $this->assertEquals($response->getData(), $this->defaults['data']);
+    $this->assertEquals($response->getErrors(), $this->defaults['errors']);
+  }
+
+  protected function constructResponse(array $attributes = array())
+  {
+    $attributes = (object)array_merge($this->defaults, $attributes);
+
+    return new JSendResponse(
+        $attributes->status,
+        $attributes->data,
+        $attributes->errors,
+        $attributes->code,
+        $attributes->message
+    );
   }
 
   /**
@@ -41,7 +44,7 @@ class JSendResponseTests extends TestCase
   public function testConstructValidateData()
   {
     $response = $this->constructResponse(array(
-      'data' => "fail"
+        'data' => "fail"
     ));
   }
 
@@ -51,7 +54,7 @@ class JSendResponseTests extends TestCase
   public function testConstructValidateCode()
   {
     $response = $this->constructResponse(array(
-      'code' => (object)array()
+        'code' => (object)array()
     ));
   }
 
@@ -61,25 +64,25 @@ class JSendResponseTests extends TestCase
   public function testConstructValidateMessage()
   {
     $response = $this->constructResponse(array(
-      'message' => (object)array()
+        'message' => (object)array()
     ));
   }
 
   public function validStatusProvider()
   {
     return array(
-      array(JSendResponse::STATUS_SUCCESS),
-      array(JSendResponse::STATUS_ERROR),
-      array(JSendResponse::STATUS_FAIL),
+        array(JSendResponse::STATUS_SUCCESS),
+        array(JSendResponse::STATUS_ERROR),
+        array(JSendResponse::STATUS_FAIL),
     );
   }
 
   public function invalidStatusProvider()
   {
     return array(
-      array('success'),
-      array('error'),
-      array('fail'),
+        array('success'),
+        array('error'),
+        array('fail'),
     );
   }
 
@@ -92,7 +95,7 @@ class JSendResponseTests extends TestCase
   public function testInvalidStatus($status)
   {
     $this->constructResponse(array(
-      'status' => $status
+        'status' => $status
     ));
   }
 
@@ -100,12 +103,13 @@ class JSendResponseTests extends TestCase
    * Test valid statuses
    *
    * @dataProvider validStatusProvider
+   *
    * @param string|int $status The status to construct with
    */
   public function testValidStatus($status)
   {
     $response = $this->constructResponse(array(
-      'status' => $status
+        'status' => $status
     ));
 
     $this->assertNotNull($response);
@@ -120,14 +124,14 @@ class JSendResponseTests extends TestCase
 
     // error
     $response = $this->constructResponse(array(
-      'status' => JSendResponse::STATUS_ERROR
+        'status' => JSendResponse::STATUS_ERROR
     ));
 
     $this->assertEquals($response->getStatus(), "error");
 
     // fail
     $response = $this->constructResponse(array(
-      'status' => JSendResponse::STATUS_FAIL
+        'status' => JSendResponse::STATUS_FAIL
     ));
 
     $this->assertEquals($response->getStatus(), "fail");
@@ -136,26 +140,27 @@ class JSendResponseTests extends TestCase
   public function testResponseValid()
   {
     $response = $this->constructResponse(array(
-      'code' => 123
+        'code' => 123
     ));
 
     $expectedJson = json_encode(
-      array(
-        'status'  => 'success',
-        'code'    => 123,
-        'message' => $this->defaults['message'],
-        'data'    => $this->defaults['data']
-      )
+        array(
+            'status'  => 'success',
+            'code'    => 123,
+            'errors'  => null,
+            'message' => $this->defaults['message'],
+            'data'    => $this->defaults['data']
+        )
     );
 
     $this->assertJsonStringEqualsJsonString(
-      $response->getResponse(),
-      $expectedJson
+        $response->getResponse(),
+        $expectedJson
     );
 
     $this->assertJsonStringEqualsJsonString(
-      $response->__toString(),
-      $expectedJson
+        $response->__toString(),
+        $expectedJson
     );
   }
 }
