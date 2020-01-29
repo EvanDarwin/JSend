@@ -8,9 +8,6 @@
 	"require": {
 		"php": ">=7.2.0"
 	},
-	"require-dev": {
-		"codeclimate/php-test-reporter": "dev-master"
-	},
 	"license": "MIT",
 	"type": "project",
 	"autoload": {
