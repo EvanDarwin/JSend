@@ -10,4 +10,4 @@ php:
   - 7.4
   - nightly
 after_success:
-  - CODECLIMATE_REPO_TOKEN=f395264854ad7aa9a1026bcaf3fe7b2961c75ac66007fe1ddb2cbb39049a7385 ./vendor/bin/test-reporter
+  - CODECLIMATE_REPO_TOKEN=f395264854ad7aa9a1026bcaf3fe7b2961c75ac66007fe1ddb2cbb39049a7385 ./vendor/bin/test-reporter after-build
