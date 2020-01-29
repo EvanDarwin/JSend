@@ -8,6 +8,9 @@ A tiny PHP library that generates JSON responses based on the original [JSend sp
 
 The specification has been slightly modified to make use for APIs, in which the are now optional `code` and `message` attributes. Both are meant to be human readable, and will not show up if not supplied.
 
+> **Version 2.x requires PHP 7.2+**
+> If you need support for PHP >= 5.6, use the 1.x branch.
+
 ## Installation
 
 Install JSend via Composer:
@@ -22,13 +25,16 @@ You can use JSend like so:
 
 ```php
 <?php
-
 use EvanDarwin\JSend\JSendBuilder;
 
 $builder = new JSendBuilder();
 
 // This will return a JSendResponse
-$response = $builder->success()->data(['id' => 3])->code(12)->message("Hello")->get();
+$response = $builder->success()
+                    ->data(['id' => 3])
+                    ->code(12)
+                    ->message("Hello")
+                    ->get();
 
 // Output the JSON
 header('Content-Type: application/json');
@@ -54,13 +60,16 @@ Alternative statuses include:
 
 ```php
 <?php
+use EvanDarwin\JSend\JSendBuilder;
+
 // These alternatives statuses can be set like so
+$builder = new JSendBuilder();
 
 // For failure
-$builder->failed();
+$builder->failed()->get();
 
 // For error
-$builder->error();
+$builder->error()->get();
 ```
 
 ## License
