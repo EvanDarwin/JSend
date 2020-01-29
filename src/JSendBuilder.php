@@ -5,10 +5,19 @@ namespace EvanDarwin\JSend;
 use InvalidArgumentException;
 
 class JSendBuilder {
+    /** @var int */
     private $status;
+    
+    /** @var mixed[] */
     private $data;
+    
+    /** @var string[] */
     private $errors;
+    
+    /** @var string|null */
     private $message;
+    
+    /** @var int|null */
     private $code;
     
     /**
@@ -21,11 +30,12 @@ class JSendBuilder {
      * @param int|null    $code    The human (error) code
      */
     public function __construct(
-        $status = JSendResponse::STATUS_SUCCESS,
+        int $status = JSendResponse::STATUS_SUCCESS,
         array $data = array(),
         array $errors = array(),
-        $message = null,
-        $code = null) {
+        string $message = null,
+        int $code = null) {
+        
         $this->status = $status;
         $this->data = $data;
         $this->errors = $errors;
@@ -36,36 +46,24 @@ class JSendBuilder {
     /**
      * Sets the status to successful.
      */
-    public function success() {
-        $this->status = JSendResponse::STATUS_SUCCESS;
-        
+    public function success(): self {
+        $this->status(JSendResponse::STATUS_SUCCESS);
         return $this;
     }
     
     /**
      * Sets the status to be an error.
      */
-    public function error() {
-        $this->status = JSendResponse::STATUS_ERROR;
-        
+    public function error(): self {
+        $this->status(JSendResponse::STATUS_ERROR);
         return $this;
-    }
-    
-    /**
-     * Alias for ::failed()
-     *
-     * @deprecated
-     */
-    public function fail() {
-        $this->failed();
     }
     
     /**
      * Sets the status to failed.
      */
-    public function failed() {
-        $this->status = JSendResponse::STATUS_FAIL;
-        
+    public function failed(): self {
+        $this->status(JSendResponse::STATUS_FAIL);
         return $this;
     }
     
@@ -80,27 +78,14 @@ class JSendBuilder {
      *
      * @return $this
      *
-     * @deprecated
+     * @internal
      */
-    public function status($status) {
-        if (is_string($status)) {
-            switch ($status) {
-                case 'success':
-                    $this->status = JSendResponse::STATUS_SUCCESS;
-                    break;
-                case 'error':
-                    $this->status = JSendResponse::STATUS_ERROR;
-                    break;
-                case 'fail':
-                    $this->status = JSendResponse::STATUS_FAIL;
-                    break;
-                default:
-                    throw new InvalidArgumentException("Unable to parse status '${status}'");
-            }
-        } else {
-            $this->status = $status;
+    protected function status(?string $status): self {
+        $valid = [JSendResponse::STATUS_SUCCESS, JSendResponse::STATUS_FAIL, JSendResponse::STATUS_ERROR];
+        if ($status !== null && in_array($status, $valid, true)) {
+            throw new InvalidArgumentException("Unable to parse status '${status}'");
         }
-        
+        $this->status = $status;
         return $this;
     }
     
@@ -111,9 +96,8 @@ class JSendBuilder {
      *
      * @return $this
      */
-    public function data(array $data) {
+    public function data(array $data): self {
         $this->data = $data;
-        
         return $this;
     }
     
@@ -124,7 +108,7 @@ class JSendBuilder {
      *
      * @return $this
      */
-    public function errors(array $errors) {
+    public function errors(array $errors): self {
         $this->errors = $errors;
         
         return $this;
@@ -137,22 +121,20 @@ class JSendBuilder {
      *
      * @return $this
      */
-    public function message($message) {
+    public function message(string $message): self {
         $this->message = $message;
-        
         return $this;
     }
     
     /**
      * Set the error code
      *
-     * @param $code
+     * @param int $code
      *
      * @return $this
      */
-    public function code($code) {
+    public function code(?int $code): self {
         $this->code = $code;
-        
         return $this;
     }
     
@@ -163,7 +145,7 @@ class JSendBuilder {
      *
      * @throws InvalidArgumentException
      */
-    public function get() {
+    public function get(): JSendResponse {
         return new JSendResponse($this->status, $this->data, $this->errors, $this->code, $this->message);
     }
 }

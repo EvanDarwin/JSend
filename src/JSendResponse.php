@@ -9,17 +9,36 @@ class JSendResponse {
     public const STATUS_FAIL    = 2;
     public const STATUS_ERROR   = 3;
     
+    /** @var string */
     private $status;
-    private $data;
-    private $errors;
-    private $code, $message;
     
-    public function __construct($status, $data = null, $errors = null, $code = null, $message = null) {
-        $validStatuses = array(
-            self::STATUS_SUCCESS,
-            self::STATUS_FAIL,
-            self::STATUS_ERROR
-        );
+    /** @var array|null */
+    private $data;
+    
+    /** @var array|null */
+    private $errors;
+    
+    /** @var int|string */
+    private $code;
+    
+    /** @var string */
+    private $message;
+    
+    /**
+     * JSendResponse constructor.
+     *
+     * @param int             $status
+     * @param array|null      $data
+     * @param array|null      $errors
+     * @param int|string|null $code
+     * @param string|null     $message
+     */
+    public function __construct(int $status,
+                                ?array $data = null,
+                                array $errors = null,
+                                $code = null,
+                                ?string $message = null) {
+        $validStatuses = [self::STATUS_SUCCESS, self::STATUS_FAIL, self::STATUS_ERROR];
         
         // Validate they gave us a valid status.
         if ($status === null || !in_array($status, $validStatuses, true)) {
@@ -38,7 +57,7 @@ class JSendResponse {
         
         // Validate $code
         if (!is_int($code) && $code !== null && !is_string($code)) {
-            throw new InvalidArgumentException('Status code must be null, an integer, or a string');
+            throw new InvalidArgumentException('Status code must be null or an integer');
         }
         
         // Validate $message
@@ -76,7 +95,7 @@ class JSendResponse {
      *
      * @return int
      */
-    public function getCode(): int {
+    public function getCode(): ?int {
         return $this->code;
     }
     

@@ -1,10 +1,10 @@
 language: php
 install: 
   - wget -O test-reporter https://codeclimate.com/downloads/test-reporter/test-reporter-latest-linux-amd64
-  - wget -O phpunit https://phar.phpunit.de/phpunit-8.5.phar
+  - wget -O phpunit https://phar.phpunit.de/phpunit-8.phar
   - chmod +x ./test-reporter ./phpunit
   - ./test-reporter before-build
-  - composer install -o --dev
+  - composer install -o
 php:
   - 7.2
   - 7.3
