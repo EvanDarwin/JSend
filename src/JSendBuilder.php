@@ -141,11 +141,11 @@ class JSendBuilder {
     /**
      * Returns the built object
      *
-     * @return JSendResponse
+     * @return JSendResponse|mixed
      *
      * @throws InvalidArgumentException
      */
-    public function get(): JSendResponse {
+    public function get() {
         return new JSendResponse($this->status, $this->data, $this->errors, $this->code, $this->message);
     }
 }
