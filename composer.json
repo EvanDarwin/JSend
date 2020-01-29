@@ -1,5 +1,6 @@
 {
 	"name": "evandarwin/jsend",
+	"version": "2.0.0",
 	"description": "Basic JSend interface for PHP projects.",
 	"keywords": [
 		"jsend",
